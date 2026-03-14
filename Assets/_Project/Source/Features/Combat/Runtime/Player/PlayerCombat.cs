@@ -99,16 +99,9 @@ namespace W1Style.Features.Combat.Player
                 IsHeadshot = isHeadshot
             };
 
-            var damageable = hit.collider.GetComponentInParent<IDamageable>() as Component;
-            if (damageable == null)
-                damageable = hit.collider.GetComponent<Component>();
-
+            var damageable = hit.collider.GetComponentInParent<Damageable>();
             if (damageable != null)
-            {
-                var dmg = damageable.GetComponentInParent<Damageable>();
-                if (dmg != null)
-                    dmg.TakeDamage(info);
-            }
+                damageable.TakeDamage(info);
 
             // Apply physics impulse to anything with a rigidbody
             var rb = hit.collider.attachedRigidbody;

@@ -33,12 +33,9 @@ namespace W1Style.Features.Combat.Player
             if (!UnityEngine.Physics.Raycast(origin, direction, out RaycastHit hit, _interactRange, _interactLayers))
                 return;
 
-            var interactable = hit.collider.GetComponentInParent<IInteractable>() as Component;
-            if (interactable == null)
-                interactable = hit.collider.GetComponent<Component>();
-
-            if (interactable is IInteractable target && target.CanInteract)
-                target.Interact(gameObject);
+            var interactable = hit.collider.GetComponentInParent<IInteractable>();
+            if (interactable != null && interactable.CanInteract)
+                interactable.Interact(gameObject);
         }
     }
 }

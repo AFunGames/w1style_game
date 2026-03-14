@@ -52,6 +52,17 @@ namespace W1Style.Features.Combat.Player
             TryPickup();
         }
 
+        /// <summary>
+        /// Force-pickup a specific throwable object. Called by <see cref="Interaction.PickupObject"/>.
+        /// </summary>
+        public bool TryPickupObject(ThrowableObject throwable)
+        {
+            if (_heldObject != null || throwable == null) return false;
+            _heldObject = throwable;
+            _heldObject.Pickup(_holdPoint);
+            return true;
+        }
+
         private void TryPickup()
         {
             Vector3 origin = _cameraTransform.position;

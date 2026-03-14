@@ -2,6 +2,7 @@ using UnityEngine;
 using W1Style.Features.Combat.Components;
 using W1Style.Features.Combat.Domain;
 using W1Style.Features.Combat.Noise;
+using W1Style.Features.Combat.Player;
 
 namespace W1Style.Features.Combat.Enemy
 {

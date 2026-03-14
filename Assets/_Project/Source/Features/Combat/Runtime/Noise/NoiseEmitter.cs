@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +8,7 @@ namespace W1Style.Features.Combat.Noise
     /// When noise is emitted at a position, all <see cref="NoiseListener"/>
     /// instances within range are notified.
     /// </summary>
-    public sealed class NoiseEmitter : MonoBehaviour
+    public static class NoiseEmitter
     {
         private static readonly List<NoiseListener> _listeners = new();
 
