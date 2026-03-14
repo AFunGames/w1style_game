@@ -1,0 +1,20 @@
+{
+    "name": "W1Style.Editor",
+    "rootNamespace": "W1Style.Editor",
+    "references": [
+        "W1Style.Core",
+        "W1Style.Configs",
+        "W1Style.Infrastructure"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

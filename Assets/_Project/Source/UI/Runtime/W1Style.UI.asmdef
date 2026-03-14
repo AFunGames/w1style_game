@@ -1,0 +1,17 @@
+{
+    "name": "W1Style.UI",
+    "rootNamespace": "W1Style.UI",
+    "references": [
+        "W1Style.Core",
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

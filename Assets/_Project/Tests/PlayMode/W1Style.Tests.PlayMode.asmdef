@@ -1,0 +1,25 @@
+{
+    "name": "W1Style.Tests.PlayMode",
+    "rootNamespace": "W1Style.Tests.PlayMode",
+    "references": [
+        "W1Style.Core",
+        "W1Style.Infrastructure",
+        "W1Style.Bootstrap",
+        "W1Style.Features.Inventory",
+        "W1Style.UI",
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

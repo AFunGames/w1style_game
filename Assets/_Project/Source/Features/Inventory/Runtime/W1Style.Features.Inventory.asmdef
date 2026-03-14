@@ -1,0 +1,24 @@
+{
+    "name": "W1Style.Features.Inventory",
+    "rootNamespace": "W1Style.Features.Inventory",
+    "references": [
+        "W1Style.Core",
+        "W1Style.Configs",
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.modules.odin",
+            "expression": "",
+            "define": "ODIN_INSPECTOR"
+        }
+    ],
+    "noEngineReferences": false
+}

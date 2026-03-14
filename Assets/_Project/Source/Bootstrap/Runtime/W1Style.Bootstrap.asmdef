@@ -1,0 +1,19 @@
+{
+    "name": "W1Style.Bootstrap",
+    "rootNamespace": "W1Style.Bootstrap",
+    "references": [
+        "W1Style.Core",
+        "W1Style.Configs",
+        "W1Style.Infrastructure",
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
