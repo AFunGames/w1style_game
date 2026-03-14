@@ -15,6 +15,7 @@ namespace W1Style.Bootstrap
     /// - ISceneService (singleton)
     /// - ISaveService (singleton)
     /// - IAppLifecycleService (singleton, MonoBehaviour on ProjectContext)
+    /// - IGameLauncher (singleton)
     /// </summary>
     public sealed class ProjectInstaller : MonoInstaller<ProjectInstaller>
     {
@@ -52,6 +53,11 @@ namespace W1Style.Bootstrap
                 .WithGameObjectName("AppLifecycleService")
                 .AsSingle()
                 .NonLazy();
+
+            // Game Launcher
+            Container.Bind<IGameLauncher>()
+                .To<GameSceneLauncher>()
+                .AsSingle();
         }
     }
 }

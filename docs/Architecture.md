@@ -27,11 +27,14 @@ Assets/
     │   │   │   ├── ITimeProvider.cs
     │   │   │   ├── ISaveService.cs
     │   │   │   ├── IEventBus.cs
-    │   │   │   └── IAppLifecycleService.cs
+    │   │   │   ├── IAppLifecycleService.cs
+    │   │   │   └── IGameLauncher.cs
     │   │   ├── Events/
     │   │   │   └── GameEvents.cs
     │   │   ├── Constants/
     │   │   │   └── SceneNames.cs
+    │   │   ├── Launch/
+    │   │   │   └── GameLaunchRequest.cs
     │   │   └── W1Style.Core.asmdef
     │   ├── Infrastructure/Runtime/        # Service implementations
     │   │   ├── Services/
@@ -40,7 +43,8 @@ Assets/
     │   │   │   ├── UnityTimeProvider.cs
     │   │   │   ├── EventBus.cs
     │   │   │   ├── AppLifecycleService.cs
-    │   │   │   └── PlayerPrefsSaveService.cs
+    │   │   │   ├── PlayerPrefsSaveService.cs
+    │   │   │   └── GameSceneLauncher.cs
     │   │   └── W1Style.Infrastructure.asmdef
     │   ├── Configs/Runtime/               # ScriptableObject config definitions
     │   │   ├── GameConfig.cs
@@ -66,19 +70,25 @@ Assets/
     │   │   │   └── IUIService.cs
     │   │   ├── Services/
     │   │   │   └── UIService.cs
+    │   │   ├── Views/
+    │   │   │   └── MainMenuView.cs
     │   │   └── W1Style.UI.asmdef
     │   └── Editor/                        # Editor-only tools and utilities
     │       ├── Tools/
     │       │   ├── BootstrapSceneLoader.cs
     │       │   ├── ConfigValidator.cs
-    │       │   └── ProjectMenuItems.cs
+    │       │   ├── ProjectMenuItems.cs
+    │       │   └── RunViaBootstrap.cs
     │       └── W1Style.Editor.asmdef
     ├── Tests/                             # Test assemblies
     │   ├── EditMode/
     │   │   ├── Core/
-    │   │   │   └── EventBusTests.cs
+    │   │   │   ├── EventBusTests.cs
+    │   │   │   └── GameLaunchRequestTests.cs
     │   │   ├── Features/
     │   │   │   └── InventoryItemTests.cs
+    │   │   ├── Infrastructure/
+    │   │   │   └── GameSceneLauncherTests.cs
     │   │   └── W1Style.Tests.EditMode.asmdef
     │   └── PlayMode/
     │       └── W1Style.Tests.PlayMode.asmdef
@@ -139,7 +149,7 @@ Assets/
 Lives in `Assets/_Project/Resources/ProjectContext.prefab`. Unity automatically loads this via `Resources.Load`.
 
 **Attached Installers:**
-- `ProjectInstaller` — Binds all global services (ILogService, IEventBus, ITimeProvider, ISceneService, ISaveService, IAppLifecycleService)
+- `ProjectInstaller` — Binds all global services (ILogService, IEventBus, ITimeProvider, ISceneService, ISaveService, IAppLifecycleService, IGameLauncher)
 - `ConfigInstaller` — Binds GameConfig and all sub-configs (AudioConfig, GameplayConfig, UIConfig)
 
 **What belongs in ProjectContext:**
@@ -187,9 +197,23 @@ Each scene can have a `SceneContext` GameObject with scene-level installers.
 4. BootstrapController.Start() executes
    └── Publishes GameStateChangedEvent (None → Bootstrap)
    └── Runs startup sequence (data loading, validation, etc.)
-   └── Publishes GameStateChangedEvent (Bootstrap → MainMenu)
-   └── Calls ISceneService.LoadSceneAsync("MainMenu")
-5. MainMenu scene loads with its own SceneContext
+   └── Resolves target scene:
+       a. Check GameLaunchRequest (static — set by GameSceneLauncher at runtime)
+       b. In editor, check SessionState (set by RunViaBootstrap menu item)
+       c. Fallback → MainMenu
+   └── Publishes GameStateChangedEvent (Bootstrap → target state)
+   └── Calls ISceneService.LoadSceneAsync(targetScene)
+5. Target scene loads with its own SceneContext
+```
+
+### Scene Launch Flow
+```
+Any caller (UI button, editor tool, etc.)
+    └── GameSceneLauncher.LaunchViaBootstrap("Gameplay")
+        └── Validates scene name (non-empty, not Bootstrap, in Build Settings)
+        └── GameLaunchRequest.SetTargetScene("Gameplay")
+        └── ISceneService.LoadScene("Bootstrap")
+            └── BootstrapController resolves → loads "Gameplay"
 ```
 
 ### Key Principles
@@ -244,6 +268,7 @@ GameConfig (root)
 | Event Bus | `IEventBus` | `EventBus` | Global | Type-keyed pub/sub for decoupled cross-system communication. |
 | Save/Load | `ISaveService` | `PlayerPrefsSaveService` | Global | Abstracts persistence. Swap implementation for file/cloud storage. |
 | App Lifecycle | `IAppLifecycleService` | `AppLifecycleService` | Global | Centralizes pause/resume/quit handling. Ensures cleanup on app transitions. |
+| Game Launcher | `IGameLauncher` | `GameSceneLauncher` | Global | Centralized scene-via-Bootstrap launching. Validates scenes, stores launch request, triggers Bootstrap. |
 
 ---
 
@@ -355,9 +380,12 @@ All scenes live in `Assets/_Project/Scenes/`.
 Tests/
 ├── EditMode/                          # Fast tests, no scene loading
 │   ├── Core/                          # Core abstraction tests
-│   │   └── EventBusTests.cs
+│   │   ├── EventBusTests.cs
+│   │   └── GameLaunchRequestTests.cs
 │   ├── Features/                      # Feature domain/service tests
 │   │   └── InventoryItemTests.cs
+│   ├── Infrastructure/                # Service tests with fakes
+│   │   └── GameSceneLauncherTests.cs
 │   └── W1Style.Tests.EditMode.asmdef
 └── PlayMode/                          # Tests requiring Unity runtime
     └── W1Style.Tests.PlayMode.asmdef
@@ -376,6 +404,7 @@ Tests/
 
 | Tool | Menu Path | Purpose |
 |------|-----------|---------|
+| Run via Bootstrap | `W1Style/Run/Run Current Scene via Bootstrap` | Stores current scene as target, opens Bootstrap, enters play mode |
 | Bootstrap Scene Loader | `W1Style/Scenes/Open Bootstrap Scene` | Quick-open Bootstrap scene |
 | MainMenu Scene Loader | `W1Style/Scenes/Open MainMenu Scene` | Quick-open MainMenu scene |
 | Gameplay Scene Loader | `W1Style/Scenes/Open Gameplay Scene` | Quick-open Gameplay scene |
