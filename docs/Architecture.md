@@ -1,98 +1,109 @@
 # W1Style Game — Architecture Guide
 
+> **Unity Version:** 6000.0.49f1 (Unity 6)
+
 ## 1. Folder Structure
 
 ```
 Assets/
-├── _Project/                          # All project-specific code and assets
-│   ├── Bootstrap/                     # Startup logic, composition root
-│   │   └── Runtime/
-│   │       ├── BootstrapController.cs
-│   │       ├── BootstrapSceneInstaller.cs
-│   │       ├── ProjectInstaller.cs
-│   │       ├── ConfigInstaller.cs
-│   │       └── W1Style.Bootstrap.asmdef
-│   ├── Core/                          # Shared interfaces, events, constants
-│   │   └── Runtime/
-│   │       ├── Interfaces/
-│   │       │   ├── ILogService.cs
-│   │       │   ├── ISceneService.cs
-│   │       │   ├── ITimeProvider.cs
-│   │       │   ├── ISaveService.cs
-│   │       │   ├── IEventBus.cs
-│   │       │   └── IAppLifecycleService.cs
-│   │       ├── Events/
-│   │       │   └── GameEvents.cs
-│   │       ├── Constants/
-│   │       │   └── SceneNames.cs
-│   │       └── W1Style.Core.asmdef
-│   ├── Infrastructure/                # Service implementations
-│   │   └── Runtime/
-│   │       ├── Services/
-│   │       │   ├── LogService.cs
-│   │       │   ├── SceneService.cs
-│   │       │   ├── UnityTimeProvider.cs
-│   │       │   ├── EventBus.cs
-│   │       │   ├── AppLifecycleService.cs
-│   │       │   └── PlayerPrefsSaveService.cs
-│   │       └── W1Style.Infrastructure.asmdef
-│   ├── Configs/                       # ScriptableObject config definitions
-│   │   └── Runtime/
-│   │       ├── GameConfig.cs
-│   │       ├── AudioConfig.cs
-│   │       ├── GameplayConfig.cs
-│   │       ├── UIConfig.cs
-│   │       └── W1Style.Configs.asmdef
-│   ├── Features/                      # Feature modules (one folder per feature)
-│   │   └── Inventory/
-│   │       └── Runtime/
-│   │           ├── Domain/
-│   │           │   ├── InventoryItem.cs
-│   │           │   └── IInventoryService.cs
-│   │           ├── Services/
-│   │           │   └── InventoryService.cs
-│   │           ├── Config/
-│   │           │   └── InventoryConfig.cs
-│   │           ├── Installer/
-│   │           │   └── InventoryInstaller.cs
-│   │           └── W1Style.Features.Inventory.asmdef
-│   ├── UI/                            # UI framework and shared UI components
-│   │   └── Runtime/
-│   │       ├── Core/
-│   │       │   ├── UIPanel.cs
-│   │       │   └── IUIService.cs
-│   │       ├── Services/
-│   │       │   └── UIService.cs
-│   │       └── W1Style.UI.asmdef
-│   ├── Editor/                        # Editor-only tools and utilities
-│   │   ├── Tools/
-│   │   │   ├── BootstrapSceneLoader.cs
-│   │   │   ├── ConfigValidator.cs
-│   │   │   └── ProjectMenuItems.cs
-│   │   └── W1Style.Editor.asmdef
-│   └── Tests/                         # Test assemblies
-│       ├── EditMode/
-│       │   ├── Core/
-│       │   │   └── EventBusTests.cs
-│       │   ├── Features/
-│       │   │   └── InventoryItemTests.cs
-│       │   └── W1Style.Tests.EditMode.asmdef
-│       └── PlayMode/
-│           └── W1Style.Tests.PlayMode.asmdef
-├── Art/                               # Visual assets
-│   ├── Materials/
-│   ├── Sprites/
-│   ├── Models/
-│   └── Animations/
-├── Audio/                             # Audio assets
-│   ├── Music/
-│   └── SFX/
-├── Prefabs/                           # Shared prefabs (non-feature-specific)
-├── Scenes/                            # All scene files
-├── Settings/                          # Unity project settings, render pipelines
-├── Plugins/                           # Native plugins
-├── ThirdParty/                        # Third-party assets (not from Package Manager)
-└── Resources/                         # Only for assets requiring Resources.Load
+├── Plugins/                               # Third-party libraries (managed as assets)
+│   ├── Demigiant/DOTween/                 # Tween/animation library
+│   ├── I2/Localization/                   # Multi-language localization system
+│   ├── Sirenix/                           # Odin Inspector & Serializer
+│   └── Zenject/                           # Dependency Injection framework
+├── ThirdParty/                            # Other third-party assets (non-Plugin)
+└── _Project/                              # All project-specific code and content
+    ├── Source/                            # C# source code (assembly definitions)
+    │   ├── Bootstrap/Runtime/             # Startup logic, composition root
+    │   │   ├── BootstrapController.cs
+    │   │   ├── BootstrapSceneInstaller.cs
+    │   │   ├── ProjectInstaller.cs
+    │   │   ├── ConfigInstaller.cs
+    │   │   └── W1Style.Bootstrap.asmdef
+    │   ├── Core/Runtime/                  # Shared interfaces, events, constants
+    │   │   ├── Interfaces/
+    │   │   │   ├── ILogService.cs
+    │   │   │   ├── ISceneService.cs
+    │   │   │   ├── ITimeProvider.cs
+    │   │   │   ├── ISaveService.cs
+    │   │   │   ├── IEventBus.cs
+    │   │   │   └── IAppLifecycleService.cs
+    │   │   ├── Events/
+    │   │   │   └── GameEvents.cs
+    │   │   ├── Constants/
+    │   │   │   └── SceneNames.cs
+    │   │   └── W1Style.Core.asmdef
+    │   ├── Infrastructure/Runtime/        # Service implementations
+    │   │   ├── Services/
+    │   │   │   ├── LogService.cs
+    │   │   │   ├── SceneService.cs
+    │   │   │   ├── UnityTimeProvider.cs
+    │   │   │   ├── EventBus.cs
+    │   │   │   ├── AppLifecycleService.cs
+    │   │   │   └── PlayerPrefsSaveService.cs
+    │   │   └── W1Style.Infrastructure.asmdef
+    │   ├── Configs/Runtime/               # ScriptableObject config definitions
+    │   │   ├── GameConfig.cs
+    │   │   ├── AudioConfig.cs
+    │   │   ├── GameplayConfig.cs
+    │   │   ├── UIConfig.cs
+    │   │   └── W1Style.Configs.asmdef
+    │   ├── Features/                      # Feature modules (one folder per feature)
+    │   │   └── Inventory/Runtime/
+    │   │       ├── Domain/
+    │   │       │   ├── InventoryItem.cs
+    │   │       │   └── IInventoryService.cs
+    │   │       ├── Services/
+    │   │       │   └── InventoryService.cs
+    │   │       ├── Config/
+    │   │       │   └── InventoryConfig.cs
+    │   │       ├── Installer/
+    │   │       │   └── InventoryInstaller.cs
+    │   │       └── W1Style.Features.Inventory.asmdef
+    │   ├── UI/Runtime/                    # UI framework and shared components
+    │   │   ├── Core/
+    │   │   │   ├── UIPanel.cs
+    │   │   │   └── IUIService.cs
+    │   │   ├── Services/
+    │   │   │   └── UIService.cs
+    │   │   └── W1Style.UI.asmdef
+    │   └── Editor/                        # Editor-only tools and utilities
+    │       ├── Tools/
+    │       │   ├── BootstrapSceneLoader.cs
+    │       │   ├── ConfigValidator.cs
+    │       │   └── ProjectMenuItems.cs
+    │       └── W1Style.Editor.asmdef
+    ├── Tests/                             # Test assemblies
+    │   ├── EditMode/
+    │   │   ├── Core/
+    │   │   │   └── EventBusTests.cs
+    │   │   ├── Features/
+    │   │   │   └── InventoryItemTests.cs
+    │   │   └── W1Style.Tests.EditMode.asmdef
+    │   └── PlayMode/
+    │       └── W1Style.Tests.PlayMode.asmdef
+    ├── Art/                               # Visual assets
+    │   ├── Animations/
+    │   ├── Materials/
+    │   ├── Models/
+    │   └── Sprites/
+    ├── Audio/                             # Audio assets
+    │   ├── Music/
+    │   └── SFX/
+    ├── Prefabs/                           # Shared prefabs (non-feature-specific)
+    ├── Scenes/                            # All scene files
+    │   ├── Bootstrap.unity
+    │   ├── MainMenu.unity
+    │   └── Gameplay.unity
+    ├── Settings/                          # Config .asset files
+    │   ├── GameConfig.asset
+    │   ├── AudioConfig.asset
+    │   ├── GameplayConfig.asset
+    │   └── UIConfig.asset
+    └── Resources/                         # Only for Resources.Load assets
+        ├── ProjectContext.prefab
+        ├── DOTweenSettings.asset
+        └── I2Languages.asset
 ```
 
 ---
@@ -101,29 +112,31 @@ Assets/
 
 | Folder | Responsibility |
 |--------|---------------|
-| `_Project/Bootstrap` | Composition root. ProjectInstaller, ConfigInstaller, BootstrapController. This is where the game starts and global DI bindings are defined. |
-| `_Project/Core` | Pure interfaces, events, constants, and data types shared across the project. **No implementations, no Unity dependencies** (noEngineReferences: true). |
-| `_Project/Infrastructure` | Concrete implementations of Core interfaces. Unity-dependent services (SceneService, TimeProvider, LogService, etc.). |
-| `_Project/Configs` | ScriptableObject class definitions for all config assets. The actual `.asset` files are created in Unity and stored alongside or in a dedicated subfolder. |
-| `_Project/Features` | One subfolder per gameplay feature. Each feature is self-contained with its own domain, services, config, installer, and asmdef. |
-| `_Project/UI` | Shared UI framework: base panel class, UI service, common UI utilities. Feature-specific UI lives inside the feature folder. |
-| `_Project/Editor` | Editor-only tools: menu items, validators, custom inspectors. Compiled only in the Unity Editor. |
-| `_Project/Tests` | EditMode and PlayMode test assemblies. Mirror the runtime folder structure. |
-| `Art/` | Sprites, models, materials, animations, shaders. Organized by type, not by feature. |
-| `Audio/` | Music tracks and sound effects. |
-| `Prefabs/` | Shared prefabs not owned by a specific feature. |
-| `Scenes/` | All Unity scene files with consistent naming. |
-| `Settings/` | Render pipeline assets, quality settings, input system assets. |
-| `Plugins/` | Native platform plugins (.dll, .so, .a). |
-| `ThirdParty/` | Third-party Unity assets not installed via Package Manager. |
-| `Resources/` | **Minimal use.** Only for assets that must use `Resources.Load` (e.g., Zenject ProjectContext prefab). |
+| `Plugins/` | Third-party libraries distributed as assets: Zenject, DOTween, I2 Localization, Odin Inspector (Sirenix). Not modified by project code. |
+| `ThirdParty/` | Additional third-party assets not distributed via Package Manager or Plugins. |
+| `_Project/` | **Everything project-specific.** Both source code and content live here, cleanly separated from third-party assets. |
+| `_Project/Source/` | All C# source code, organized by architectural module. Each module has its own assembly definition. |
+| `_Project/Source/Bootstrap` | Composition root. ProjectInstaller, ConfigInstaller, BootstrapController. This is where the game starts and global DI bindings are defined. |
+| `_Project/Source/Core` | Pure interfaces, events, constants, and data types shared across the project. **No implementations, no Unity dependencies** (noEngineReferences: true). |
+| `_Project/Source/Infrastructure` | Concrete implementations of Core interfaces. Unity-dependent services (SceneService, TimeProvider, LogService, etc.). |
+| `_Project/Source/Configs` | ScriptableObject class definitions for all config types. The actual `.asset` files live in `_Project/Settings/`. |
+| `_Project/Source/Features` | One subfolder per gameplay feature. Each feature is self-contained with its own domain, services, config, installer, and asmdef. |
+| `_Project/Source/UI` | Shared UI framework: base panel class, UI service, common UI utilities. Feature-specific UI lives inside the feature folder. |
+| `_Project/Source/Editor` | Editor-only tools: menu items, validators, custom inspectors. Compiled only in the Unity Editor. |
+| `_Project/Tests/` | EditMode and PlayMode test assemblies. Mirror the source folder structure. |
+| `_Project/Art/` | Sprites, models, materials, animations, shaders. Organized by type, not by feature. |
+| `_Project/Audio/` | Music tracks and sound effects. |
+| `_Project/Prefabs/` | Shared prefabs not owned by a specific feature. |
+| `_Project/Scenes/` | All Unity scene files with consistent naming. |
+| `_Project/Settings/` | Config `.asset` files (GameConfig, AudioConfig, GameplayConfig, UIConfig). |
+| `_Project/Resources/` | **Minimal use.** Only for assets that must use `Resources.Load` — Zenject ProjectContext, DOTweenSettings, I2Languages. |
 
 ---
 
 ## 3. Zenject Architecture & Installer Layout
 
 ### ProjectContext (Global / Cross-Scene)
-Lives in `Assets/Resources/ProjectContext.prefab`. Unity automatically loads this.
+Lives in `Assets/_Project/Resources/ProjectContext.prefab`. Unity automatically loads this via `Resources.Load`.
 
 **Attached Installers:**
 - `ProjectInstaller` — Binds all global services (ILogService, IEventBus, ITimeProvider, ISceneService, ISaveService, IAppLifecycleService)
@@ -165,7 +178,8 @@ Each scene can have a `SceneContext` GameObject with scene-level installers.
 ### Startup Order
 ```
 1. Unity loads Bootstrap scene (Build Settings index 0)
-2. ProjectContext prefab auto-loads from Resources/
+   Location: Assets/_Project/Scenes/Bootstrap.unity
+2. ProjectContext prefab auto-loads from _Project/Resources/
    └── ProjectInstaller.InstallBindings()     → global services registered
    └── ConfigInstaller.InstallBindings()      → configs bound
 3. Bootstrap scene's SceneContext initializes
@@ -201,6 +215,10 @@ GameConfig (root)
 - ConfigInstaller binds both the root and each sub-config individually, so services can inject exactly what they need.
 - Odin Inspector `[Required]` attributes validate references in the inspector.
 
+### Config File Locations
+- **Class definitions**: `_Project/Source/Configs/Runtime/` (e.g., `GameConfig.cs`, `AudioConfig.cs`)
+- **Asset instances**: `_Project/Settings/` (e.g., `GameConfig.asset`, `AudioConfig.asset`)
+
 ### Creating Config Assets
 1. Right-click in Project: `Create → W1Style/Configs/Game Config`
 2. Right-click in Project: `Create → W1Style/Configs/Audio Config`, etc.
@@ -208,10 +226,11 @@ GameConfig (root)
 4. Assign GameConfig to the ConfigInstaller on the ProjectContext prefab.
 
 ### Adding New Configs
-1. Create a new `XyzConfig : ScriptableObject` in `_Project/Configs/Runtime/`.
+1. Create a new `XyzConfig : ScriptableObject` in `_Project/Source/Configs/Runtime/`.
 2. Add a reference field in `GameConfig`.
 3. Add a binding in `ConfigInstaller`.
-4. Inject `XyzConfig` in any service that needs it.
+4. Create the `.asset` file in `_Project/Settings/`.
+5. Inject `XyzConfig` in any service that needs it.
 
 ---
 
@@ -231,7 +250,7 @@ GameConfig (root)
 ## 7. Feature Module Structure (Inventory Example)
 
 ```
-Features/Inventory/
+Source/Features/Inventory/
 └── Runtime/
     ├── Domain/                    # Pure data models and interfaces
     │   ├── InventoryItem.cs       # Plain C# data class
@@ -246,7 +265,7 @@ Features/Inventory/
 ```
 
 ### Adding a New Feature
-1. Create `Features/{FeatureName}/Runtime/` with Domain, Services, Config, Installer subfolders.
+1. Create `Source/Features/{FeatureName}/Runtime/` with Domain, Services, Config, Installer subfolders.
 2. Create a `W1Style.Features.{FeatureName}.asmdef` referencing `W1Style.Core` (and `W1Style.Configs` if needed).
 3. Define interfaces in Domain, implementations in Services, config in Config.
 4. Create `{FeatureName}Installer` and add it to the appropriate SceneContext.
@@ -287,13 +306,14 @@ W1Style.Tests.PlayMode       (→ Core, Infrastructure, Bootstrap, Features, UI,
 
 ## 9. Scene Strategy
 
-### Recommended Scenes
+### Current Scenes
+All scenes live in `Assets/_Project/Scenes/`.
+
 | Scene | Purpose | Notes |
 |-------|---------|-------|
 | `Bootstrap` | Entry point (Build Index 0) | Lightweight, runs startup sequence |
 | `MainMenu` | Main menu UI | First scene after bootstrap |
 | `Gameplay` | Core gameplay | Primary game scene |
-| `Sandbox` | Development testing | Not included in builds |
 
 ### Naming Convention
 - PascalCase, no spaces: `Bootstrap`, `MainMenu`, `Gameplay`
@@ -368,19 +388,39 @@ Tests/
 
 ## First-Time Setup Checklist
 
-1. Open the project in Unity.
-2. Import Zenject via Package Manager or Asset Store.
-3. Import Odin Inspector via Asset Store (optional but recommended).
-4. Create a `ProjectContext` prefab in `Assets/Resources/`:
-   - Add `ProjectInstaller` and `ConfigInstaller` as MonoInstallers.
-5. Create config assets:
-   - `GameConfig`, `AudioConfig`, `GameplayConfig`, `UIConfig` via `Create → W1Style/Configs/...`
-   - Assign sub-configs to GameConfig.
-   - Assign GameConfig to ConfigInstaller on the ProjectContext prefab.
-6. Create the Bootstrap scene in `Assets/Scenes/`:
-   - Add a `SceneContext` with `BootstrapSceneInstaller`.
-   - Add a GameObject with `BootstrapController`.
-   - Set as Build Index 0.
-7. Create MainMenu and Gameplay scenes.
-8. Run `W1Style/Validation/Validate Game Config` to verify setup.
-9. Press Play in Bootstrap scene to test the full startup flow.
+1. Open the project in Unity 6 (6000.0.49f1 or compatible).
+2. Plugins are pre-installed in `Assets/Plugins/`:
+   - Zenject (DI), Odin Inspector (Sirenix), DOTween (Demigiant), I2 Localization.
+3. UniTask is pre-configured via Package Manager (`Packages/manifest.json`).
+4. `ProjectContext` prefab already exists in `Assets/_Project/Resources/`:
+   - Verify `ProjectInstaller` and `ConfigInstaller` are attached as MonoInstallers.
+5. Config assets already exist in `Assets/_Project/Settings/`:
+   - `GameConfig.asset`, `AudioConfig.asset`, `GameplayConfig.asset`, `UIConfig.asset`.
+   - Verify sub-configs are assigned in GameConfig.
+   - Verify GameConfig is assigned to ConfigInstaller on the ProjectContext prefab.
+6. Scenes already exist in `Assets/_Project/Scenes/`:
+   - `Bootstrap.unity` — verify it is Build Index 0 with SceneContext + BootstrapController.
+   - `MainMenu.unity`, `Gameplay.unity` — add SceneContext as needed.
+7. Run `W1Style/Validation/Validate Game Config` to verify setup.
+8. Press Play in Bootstrap scene to test the full startup flow.
+
+---
+
+## Third-Party Libraries
+
+### Installed in `Assets/Plugins/`
+
+| Library | Folder | Purpose |
+|---------|--------|---------|
+| **Zenject** | `Plugins/Zenject/` | Dependency Injection framework. Provides ProjectContext, SceneContext, MonoInstaller, and `[Inject]` attribute. |
+| **Odin Inspector** | `Plugins/Sirenix/` | Enhanced Unity Inspector with attributes like `[Required]`, `[Title]`, `[PropertyRange]`. Used in config ScriptableObjects for validation and grouping. |
+| **DOTween** | `Plugins/Demigiant/DOTween/` | High-performance tween/animation library. Use for UI animations, transitions, gameplay effects. |
+| **I2 Localization** | `Plugins/I2/Localization/` | Multi-language localization system. Language asset is at `_Project/Resources/I2Languages.asset`. |
+
+### Installed via Package Manager (`Packages/manifest.json`)
+
+| Package | Source | Purpose |
+|---------|--------|---------|
+| **UniTask** | `com.cysharp.unitask` (git) | Allocation-free async/await for Unity. Use instead of coroutines for async operations. |
+| **Unity Test Framework** | `com.unity.test-framework` 1.5.1 | NUnit-based testing for EditMode and PlayMode tests. |
+| **Unity UI** | `com.unity.ugui` 2.0.0 | Unity's built-in UI system (Canvas, EventSystem). |
