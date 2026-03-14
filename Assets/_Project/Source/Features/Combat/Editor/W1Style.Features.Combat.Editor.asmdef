@@ -4,7 +4,8 @@
     "references": [
         "W1Style.Features.Combat",
         "W1Style.Core",
-        "W1Style.Configs"
+        "W1Style.Configs",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [
         "Editor"
