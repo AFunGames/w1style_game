@@ -15,13 +15,15 @@ namespace W1Style.Features.Combat.Interaction
         [SerializeField] private string _itemName = "Object";
 
         private ThrowableObject _throwable;
+        private Rigidbody _rigidbody;
 
         public string InteractionPrompt => $"Pick up {_itemName}";
-        public bool CanInteract => !_throwable.gameObject.GetComponent<Rigidbody>().isKinematic;
+        public bool CanInteract => !_rigidbody.isKinematic;
 
         private void Awake()
         {
             _throwable = GetComponent<ThrowableObject>();
+            _rigidbody = GetComponent<Rigidbody>();
         }
 
         public void Interact(GameObject instigator)

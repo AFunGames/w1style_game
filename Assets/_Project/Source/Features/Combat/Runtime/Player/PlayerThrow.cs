@@ -91,8 +91,8 @@ namespace W1Style.Features.Combat.Player
             if (_heldObject == null) return;
 
             // Keep held object at hold point
-            _heldObject.transform.position = Vector3.Lerp(
-                _heldObject.transform.position, _holdPoint.position, Time.deltaTime * 15f);
+            _heldObject.transform.position = Vector3.MoveTowards(
+                _heldObject.transform.position, _holdPoint.position, Time.deltaTime * 20f);
         }
     }
 }

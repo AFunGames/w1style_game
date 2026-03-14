@@ -20,6 +20,8 @@ namespace W1Style.Features.Combat.Editor
     /// </summary>
     public static class SandboxSceneBuilder
     {
+        private const string ScenePath = "Assets/_Project/Scenes/Sandbox.unity";
+        private const string InputActionsPath = "Assets/_Project/Settings/Input Controls.inputactions";
         [MenuItem("W1Style/Combat/Build Sandbox Scene", false, 100)]
         public static void BuildScene()
         {
@@ -40,8 +42,8 @@ namespace W1Style.Features.Combat.Editor
             BuildLighting();
 
             EditorSceneManager.MarkSceneDirty(scene);
-            EditorSceneManager.SaveScene(scene, "Assets/_Project/Scenes/Sandbox.unity");
-            Debug.Log("[SandboxSceneBuilder] Sandbox scene created at Assets/_Project/Scenes/Sandbox.unity");
+            EditorSceneManager.SaveScene(scene, ScenePath);
+            Debug.Log($"[SandboxSceneBuilder] Sandbox scene created at {ScenePath}");
         }
 
         private static void BuildArena()
@@ -106,8 +108,7 @@ namespace W1Style.Features.Combat.Editor
 
             // PlayerInput for Input System
             var playerInput = player.AddComponent<PlayerInput>();
-            var inputAsset = AssetDatabase.LoadAssetAtPath<InputActionAsset>(
-                "Assets/_Project/Settings/Input Controls.inputactions");
+            var inputAsset = AssetDatabase.LoadAssetAtPath<InputActionAsset>(InputActionsPath);
             if (inputAsset != null)
             {
                 playerInput.actions = inputAsset;

@@ -40,6 +40,8 @@ namespace W1Style.Features.Combat.Enemy
         private EnemyState _state = EnemyState.Idle;
         private float _unconsciousTimer;
         private Transform _alertTarget;
+        private Vector3 _alertPosition;
+        private bool _hasAlertPosition;
 
         public EnemyState State => _state;
 
@@ -96,14 +98,24 @@ namespace W1Style.Features.Combat.Enemy
 
         private void UpdateAlert()
         {
-            if (_alertTarget == null)
+            // Determine target position
+            Vector3 targetPos;
+            if (_alertTarget != null)
+            {
+                targetPos = _alertTarget.position;
+            }
+            else if (_hasAlertPosition)
+            {
+                targetPos = _alertPosition;
+            }
+            else
             {
                 _state = EnemyState.Idle;
                 return;
             }
 
             // Face and move toward target
-            Vector3 direction = (_alertTarget.position - transform.position);
+            Vector3 direction = (targetPos - transform.position);
             direction.y = 0f;
             if (direction.sqrMagnitude > 0.01f)
             {
@@ -116,6 +128,12 @@ namespace W1Style.Features.Combat.Enemy
                     velocity.z = move.z;
                     _rb.linearVelocity = velocity;
                 }
+            }
+            else if (_alertTarget == null)
+            {
+                // Reached noise position, go back to idle
+                _hasAlertPosition = false;
+                _state = EnemyState.Idle;
             }
         }
 
@@ -161,18 +179,22 @@ namespace W1Style.Features.Combat.Enemy
         private void HandleNoise(Vector3 noisePosition)
         {
             if (_state != EnemyState.Idle) return;
-
-            // Create a temporary target at the noise position
-            var go = new GameObject("NoiseTarget");
-            go.transform.position = noisePosition;
-            BecomeAlert(go.transform);
-            Destroy(go, 5f);
+            BecomeAlertToPosition(noisePosition);
         }
 
         private void BecomeAlert(Transform target)
         {
             _state = EnemyState.Alert;
             _alertTarget = target;
+            _hasAlertPosition = false;
+        }
+
+        private void BecomeAlertToPosition(Vector3 position)
+        {
+            _state = EnemyState.Alert;
+            _alertTarget = null;
+            _alertPosition = position;
+            _hasAlertPosition = true;
         }
 
         private Transform FindPlayerInSight()
