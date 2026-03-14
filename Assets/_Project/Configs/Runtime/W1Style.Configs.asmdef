@@ -1,0 +1,22 @@
+{
+    "name": "W1Style.Configs",
+    "rootNamespace": "W1Style.Configs",
+    "references": [
+        "W1Style.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.modules.odin",
+            "expression": "",
+            "define": "ODIN_INSPECTOR"
+        }
+    ],
+    "noEngineReferences": false
+}
