@@ -37,7 +37,7 @@ namespace W1Style.Features.Inventory.Services
                     return false;
                 }
 
-                existing.Quantity += quantity;
+                existing.AddQuantity(quantity);
                 _log.Info($"Stacked {quantity}x '{itemId}'. Total: {existing.Quantity}");
                 return true;
             }
@@ -59,8 +59,8 @@ namespace W1Style.Features.Inventory.Services
             if (existing == null)
                 return false;
 
-            existing.Quantity -= quantity;
-            if (existing.Quantity <= 0)
+            existing.RemoveQuantity(quantity);
+            if (existing.IsEmpty)
             {
                 _items.Remove(existing);
                 _log.Info($"Removed '{itemId}' from inventory.");

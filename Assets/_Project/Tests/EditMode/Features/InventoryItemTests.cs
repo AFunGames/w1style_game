@@ -53,5 +53,70 @@ namespace W1Style.Tests.EditMode.Features
 
             Assert.IsTrue(item.CanStack(4));
         }
+
+        [Test]
+        public void AddQuantity_WhenWithinMax_ReturnsTrue()
+        {
+            var item = new InventoryItem("arrow_01", "Arrow", 10, 64);
+
+            Assert.IsTrue(item.AddQuantity(5));
+            Assert.AreEqual(15, item.Quantity);
+        }
+
+        [Test]
+        public void AddQuantity_WhenExceedingMax_ClampsAndReturnsFalse()
+        {
+            var item = new InventoryItem("arrow_01", "Arrow", 60, 64);
+
+            Assert.IsFalse(item.AddQuantity(10));
+            Assert.AreEqual(64, item.Quantity);
+        }
+
+        [Test]
+        public void RemoveQuantity_RemovesCorrectAmount()
+        {
+            var item = new InventoryItem("arrow_01", "Arrow", 10, 64);
+
+            var removed = item.RemoveQuantity(3);
+
+            Assert.AreEqual(3, removed);
+            Assert.AreEqual(7, item.Quantity);
+        }
+
+        [Test]
+        public void RemoveQuantity_WhenMoreThanAvailable_ClampsToQuantity()
+        {
+            var item = new InventoryItem("arrow_01", "Arrow", 5, 64);
+
+            var removed = item.RemoveQuantity(10);
+
+            Assert.AreEqual(5, removed);
+            Assert.AreEqual(0, item.Quantity);
+        }
+
+        [Test]
+        public void IsEmpty_WhenQuantityZero_ReturnsTrue()
+        {
+            var item = new InventoryItem("arrow_01", "Arrow", 1, 64);
+            item.RemoveQuantity(1);
+
+            Assert.IsTrue(item.IsEmpty);
+        }
+
+        [Test]
+        public void IsEmpty_WhenQuantityPositive_ReturnsFalse()
+        {
+            var item = new InventoryItem("arrow_01", "Arrow", 5, 64);
+
+            Assert.IsFalse(item.IsEmpty);
+        }
+
+        [Test]
+        public void Constructor_NegativeQuantity_ClampsToZero()
+        {
+            var item = new InventoryItem("arrow_01", "Arrow", -5, 64);
+
+            Assert.AreEqual(0, item.Quantity);
+        }
     }
 }

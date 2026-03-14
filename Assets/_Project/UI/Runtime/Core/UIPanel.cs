@@ -35,11 +35,11 @@ namespace W1Style.UI.Core
 
         public virtual void Hide()
         {
+            OnHide();
             CanvasGroup.alpha = 0f;
             CanvasGroup.interactable = false;
             CanvasGroup.blocksRaycasts = false;
             gameObject.SetActive(false);
-            OnHide();
         }
 
         protected virtual void OnShow() { }
