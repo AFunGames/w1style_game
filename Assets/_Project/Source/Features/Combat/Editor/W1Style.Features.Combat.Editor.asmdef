@@ -1,0 +1,20 @@
+{
+    "name": "W1Style.Features.Combat.Editor",
+    "rootNamespace": "W1Style.Features.Combat.Editor",
+    "references": [
+        "W1Style.Features.Combat",
+        "W1Style.Core",
+        "W1Style.Configs"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

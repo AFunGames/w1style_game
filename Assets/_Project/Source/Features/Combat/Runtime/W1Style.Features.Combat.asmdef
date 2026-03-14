@@ -1,0 +1,25 @@
+{
+    "name": "W1Style.Features.Combat",
+    "rootNamespace": "W1Style.Features.Combat",
+    "references": [
+        "W1Style.Core",
+        "W1Style.Configs",
+        "Zenject",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.modules.odin",
+            "expression": "",
+            "define": "ODIN_INSPECTOR"
+        }
+    ],
+    "noEngineReferences": false
+}
